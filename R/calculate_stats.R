@@ -395,12 +395,16 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["t", "mae"] <- round(mean(abs(flxDf.mod$qcomp.mod-flxDf.mod$qcomp.obs), na.rm=T), 2)
     results["t", "errcom"] <- NA
     results["t", "errmaxt"] <- NA
-    results["t", "errfdc"] <- round(integrate(splinefun(flxDf.mod[,"qcomp.mod.fdc"], 
-                                                        flxDf.mod[,"qcomp.mod"], method='natural'), 
-                                              0.05, 0.95, subdivisions=subdivisions)$value -
-                                integrate(splinefun(flxDf.mod[,"qcomp.obs.fdc"], 
-                                                    flxDf.mod[,"qcomp.obs"], method='natural'), 
-                                          0.05, 0.95, subdivisions=subdivisions)$value, 2 )
+    
+    results["t", "errfdc"] <- NA
+    # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
+    # 04 SEPTEMBER 2016; MODIFICATION BY TML
+    #results["t", "errfdc"] <- round(integrate(splinefun(flxDf.mod[,"qcomp.mod.fdc"], 
+    #                                                    flxDf.mod[,"qcomp.mod"], method='natural'), 
+    #                                          0.05, 0.95, subdivisions=subdivisions)$value -
+    #                            integrate(splinefun(flxDf.mod[,"qcomp.obs.fdc"], 
+    #                                                flxDf.mod[,"qcomp.obs"], method='natural'), 
+    #                                      0.05, 0.95, subdivisions=subdivisions)$value, 2 )
 
     results["daily", "n"] <- length(flxDf.mod.d$qcomp.mod)
     results["daily", "nse"] <- round(Nse(flxDf.mod.d$qcomp.mod, flxDf.mod.d$qcomp.obs), 2)
@@ -418,14 +422,20 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["daily", "errmaxt"] <- round(mean(as.numeric(difftime(flxDf.mod.dmax$qcomp.mod,
                                                                   flxDf.mod.dmax$qcomp.obs, 
                                                                   units="hours")), na.rm=T), 2)
-    results["daily", "errfdc"] <- round(integrate(splinefun(flxDf.mod.d[,"qcomp.mod.fdc"], 
-                                                            flxDf.mod.d[,"qcomp.mod"], 
-                                                            method='natural'), 0.05, 0.95, 
-                                                  subdivisions=subdivisions)$value -
-                                    integrate(splinefun(flxDf.mod.d[,"qcomp.obs.fdc"], 
-                                                        flxDf.mod.d[,"qcomp.obs"], 
-                                                        method='natural'), 0.05, 0.95, 
-                                              subdivisions=subdivisions)$value, 2 )
+                                                                  
+    
+    
+    results["daily", "errfdc"] <- NA
+    # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
+    # 04 SEPTEMBER 2016; MODIFICATION BY TML
+    #results["daily", "errfdc"] <- round(integrate(splinefun(flxDf.mod.d[,"qcomp.mod.fdc"], 
+    #                                                        flxDf.mod.d[,"qcomp.mod"], 
+    #                                                        method='natural'), 0.05, 0.95, 
+    #                                              subdivisions=subdivisions)$value -
+    #                                integrate(splinefun(flxDf.mod.d[,"qcomp.obs.fdc"], 
+    #                                                    flxDf.mod.d[,"qcomp.obs"], 
+    #                                                    method='natural'), 0.05, 0.95, 
+    #                                          subdivisions=subdivisions)$value, 2 )
 
     results["monthly", "n"] <- length(flxDf.mod.mwy$qcomp.mod)
     results["monthly", "nse"] <- round(Nse(flxDf.mod.mwy$qcomp.mod, flxDf.mod.mwy$qcomp.obs), 2)
