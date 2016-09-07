@@ -521,6 +521,30 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
  }
 
 
+# ADDED NEW FUNCTION TO MERGE WRF-HYDRO MODEL OUTPUT WITH USGS OBS
+# TEXT IS COPIED FROM FIRST LINES OF CalcModPerf
+mergeModObs <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q_cms", 
+                         stdate=NULL, enddate=NULL, subdivisions=1000) {
+    # Internal functions
+    which.max.dt <- function(dd, qcol, dtcol) { dd[which.max(dd[,qcol]), dtcol] }
+    CalcCOM.dt <- function(dd, qcol, dtcol) { dd[CalcCOM(dd[,qcol]), dtcol] }
+    # Prepare data
+    if (!is.null(stdate) && !is.null(enddate)) {
+      flxDf.obs <- subset(flxDf.obs, POSIXct>=stdate & POSIXct<=enddate)
+      flxDf.mod <- subset(flxDf.mod, POSIXct>=stdate & POSIXct<=enddate)
+    }
+    flxDf.mod$qcomp <- flxDf.mod[,flxCol.mod]
+    flxDf.obs$qcomp <- flxDf.obs[,flxCol.obs]
+    modT <- as.integer(flxDf.mod$POSIXct[2])-as.integer(flxDf.mod$POSIXct[1]) # model timestep in secs
+    #if (as.integer(flxDf.obs$POSIXct[2])-as.integer(flxDf.obs$POSIXct[1]) >= 86400) {flxDf.obs$POSIXct=as.POSIXct(round(flxDf.obs$POSIXct,"days"), tz="UTC")}
+    flxDf.mod <- merge(flxDf.mod[c("POSIXct","qcomp")], flxDf.obs[c("POSIXct","qcomp")], 
+                       by<-c("POSIXct"), suffixes=c(".mod",".obs"))
+    flxDf.mod <- subset(flxDf.mod, !is.na(flxDf.mod$qcomp.mod) & !is.na(flxDf.mod$qcomp.obs))
+    flxDf.mod <- CalcDates(flxDf.mod)
+    flxDf.mod$date <- as.POSIXct(trunc(flxDf.mod$POSIXct, "days"))
+    flxDf.mod
+}
+
 #' Computes model performance statistics for WRF-Hydro flux output
 #' 
 #' \code{CalcModPerfMulti} calculates model performance statistics for flux
