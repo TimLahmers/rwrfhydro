@@ -515,7 +515,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["units",] <- c("count", "unitless", "unitless", "unitless", 
                            "flux units", "unitless", "percent", "flux units", 
                            "hours|days", "hours|days",
-                           "flux units")
+                           "percent")
     
     results
  }
