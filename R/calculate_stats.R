@@ -276,7 +276,7 @@ CalcNoahmpWatBudg <- function(ldasoutDf, rtoutDf=NULL, gwoutDf=NULL, sfcrt=FALSE
 #' CalcModPerf(modStr1h.allrt.fc, obsStr5min.fc)
 #' 
 #' > Output:
-#'           nse nselog  cor rmse rmsenorm  bias  mae errcom errmaxt errfdc
+#'           nse nselog  cor rmse rmsenorm  bias  mae errcom errmaxt stddevbias
 #' ts       0.57   0.61 0.79 1.43     9.48 -28.0 0.70     NA      NA  -0.42
 #' daily    0.71   0.64 0.87 1.17     9.86 -28.1 0.61   0.19   -2.25  -0.37
 #' monthly  0.80   0.70 0.93 0.89    12.73 -26.6 0.53  -0.18   -0.96     NA
@@ -309,7 +309,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     flxDf.mod$date <- as.POSIXct(trunc(flxDf.mod$POSIXct, "days"))
     results <- as.data.frame(matrix(nrow = 7, ncol = 11))
     colnames(results) = c("n", "nse", "nselog", "cor", "rmse", "rmsenorm", "bias", "mae", 
-                          "errcom", "errmaxt", "errfdc")
+                          "errcom", "errmaxt", "stddevbias")
     rownames(results) = c("units", "t", "daily", "monthly", "yearly", "max10", "min10")
     exclvars <- names(flxDf.mod) %in% c("POSIXct", "secs", "timest", "date", "stat")
     
@@ -396,7 +396,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["t", "errcom"] <- NA
     results["t", "errmaxt"] <- NA
     
-    results["t", "errfdc"] <- NA
+    results["t", "stddevbias"] <- round(((sd(flxDf.mod$qcomp.mod)-sd(flxDf.mod$qcomp.obs))/sd(flxDf.mod$qcomp.obs))*100,2)
     # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
     # 04 SEPTEMBER 2016; MODIFICATION BY TML
     #results["t", "errfdc"] <- round(integrate(splinefun(flxDf.mod[,"qcomp.mod.fdc"], 
@@ -425,7 +425,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
                                                                   
     
     
-    results["daily", "errfdc"] <- NA
+    results["daily", "stddevbias"] <- NA
     # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
     # 04 SEPTEMBER 2016; MODIFICATION BY TML
     #results["daily", "errfdc"] <- round(integrate(splinefun(flxDf.mod.d[,"qcomp.mod.fdc"], 
@@ -457,7 +457,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["monthly", "errmaxt"] <- round(mean(as.numeric(difftime(flxDf.mod.mwymax$qcomp.mod,
                                                                     flxDf.mod.mwymax$qcomp.obs, 
                                                                     units="days")), na.rm=T), 2)
-    results["monthly", "errfdc"] <- NA
+    results["monthly", "stddevbias"] <- NA
 
     results["yearly", "n"] <- length(flxDf.mod.wy$qcomp.mod)
     results["yearly", "nse"] <- NA  #round(Nse(flxDf.mod.wy$qcomp.mod, flxDf.mod.wy$qcomp.obs), 2)
@@ -475,7 +475,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["yearly", "errmaxt"] <- round(mean(as.numeric(difftime(flxDf.mod.wymax$qcomp.mod,
                                                                    flxDf.mod.wymax$qcomp.obs, 
                                                                    units="days")), na.rm=T), 2)
-    results["yearly", "errfdc"] <- NA
+    results["yearly", "stddevbias"] <- NA
     
     results["max10", "n"] <- length(flxDf.mod.max10$qcomp.mod)
     results["max10", "nse"] <- round(Nse(flxDf.mod.max10$qcomp.mod, flxDf.mod.max10$qcomp.obs), 2)
@@ -492,7 +492,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
                                           na.rm=T), 2)
     results["max10", "errcom"] <- NA
     results["max10", "errmaxt"] <- NA
-    results["max10", "errfdc"] <- NA
+    results["max10", "stddevbias"] <- NA
     
     results["min10", "n"] <- length(flxDf.mod.min10$qcomp.mod)
     results["min10", "nse"] <- round(Nse(flxDf.mod.min10$qcomp.mod, flxDf.mod.min10$qcomp.obs), 2)
@@ -509,7 +509,7 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
                                           na.rm=T), 2)
     results["min10", "errcom"] <- NA
     results["min10", "errmaxt"] <- NA
-    results["min10", "errfdc"] <- NA
+    results["min10", "stddevbias"] <- NA
     
     # Units
     results["units",] <- c("count", "unitless", "unitless", "unitless", 
@@ -519,31 +519,6 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     
     results
  }
-
-
-# ADDED NEW FUNCTION TO MERGE WRF-HYDRO MODEL OUTPUT WITH USGS OBS
-# TEXT IS COPIED FROM FIRST LINES OF CalcModPerf
-mergeModObs <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q_cms", 
-                         stdate=NULL, enddate=NULL, subdivisions=1000) {
-    # Internal functions
-    which.max.dt <- function(dd, qcol, dtcol) { dd[which.max(dd[,qcol]), dtcol] }
-    CalcCOM.dt <- function(dd, qcol, dtcol) { dd[CalcCOM(dd[,qcol]), dtcol] }
-    # Prepare data
-    if (!is.null(stdate) && !is.null(enddate)) {
-      flxDf.obs <- subset(flxDf.obs, POSIXct>=stdate & POSIXct<=enddate)
-      flxDf.mod <- subset(flxDf.mod, POSIXct>=stdate & POSIXct<=enddate)
-    }
-    flxDf.mod$qcomp <- flxDf.mod[,flxCol.mod]
-    flxDf.obs$qcomp <- flxDf.obs[,flxCol.obs]
-    modT <- as.integer(flxDf.mod$POSIXct[2])-as.integer(flxDf.mod$POSIXct[1]) # model timestep in secs
-    #if (as.integer(flxDf.obs$POSIXct[2])-as.integer(flxDf.obs$POSIXct[1]) >= 86400) {flxDf.obs$POSIXct=as.POSIXct(round(flxDf.obs$POSIXct,"days"), tz="UTC")}
-    flxDf.mod <- merge(flxDf.mod[c("POSIXct","qcomp")], flxDf.obs[c("POSIXct","qcomp")], 
-                       by<-c("POSIXct"), suffixes=c(".mod",".obs"))
-    flxDf.mod <- subset(flxDf.mod, !is.na(flxDf.mod$qcomp.mod) & !is.na(flxDf.mod$qcomp.obs))
-    flxDf.mod <- CalcDates(flxDf.mod)
-    flxDf.mod$date <- as.POSIXct(trunc(flxDf.mod$POSIXct, "days"))
-    flxDf.mod
-}
 
 #' Computes model performance statistics for WRF-Hydro flux output
 #' 
