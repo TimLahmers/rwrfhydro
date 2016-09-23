@@ -317,13 +317,33 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
                                 main=ttext, ylim=c(minflow,maxflow)))
         }
     else {
-        with(strDf, plot(POSIXct, qcomp.mod1, typ='l', col='green2', ylab=paste0(strCol.mod1),
+        with(strDf, plot(POSIXct, qcomp.mod1, typ='l', col='red3', ylab=paste0(strCol.mod1),
                                 main=ttext, ylim=c(minflow,maxflow)))
         }
-    if (!is.null(strDf.mod2)) { with(strDf, lines(POSIXct, qcomp.mod2, col='blue')) }
+    if (!is.null(strDf.mod2)) { with(strDf, lines(POSIXct, qcomp.mod2, col='orange')) }
+    if (!is.null(strDf.mod3)) { with(strDf, lines(POSIXct, qcomp.mod3, col='yellow2')) }
+    if (!is.null(strDf.mod4)) { with(strDf, lines(POSIXct, qcomp.mod4, col='green3')) }
+    if (!is.null(strDf.mod5)) { with(strDf, lines(POSIXct, qcomp.mod5, col='blue')) }
+    if (!is.null(strDf.mod6)) { with(strDf, lines(POSIXct, qcomp.mod6, col='violetred4')) }
     with(strDf, lines(POSIXct, qcomp.obs, col='black'))
-    if (!is.null(strDf.mod2)) {
-        legend('topright', c(labelMod1, labelMod2, labelObs), col=c('green2','blue','black'), lty=c(1,1,1), bg="white")
+    if (!is.null(strDf.mod6)) {
+        legend('topright', c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelMod6, labelObs), col=c('red3','orange','yellow2','green3','blue','violetred4','black'), lty=c(1,1,1,1,1,1,1), bg="white")
+        #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
+        }
+    else if (!is.null(strDf.mod5)) {
+        legend('topright', c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelObs), col=c('red3','orange','yellow2','green3','blue','black'), lty=c(1,1,1,1,1,1), bg="white")
+        #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
+        }
+    else if (!is.null(strDf.mod4)) {
+        legend('topright', c(labelMod1, labelMod2, labelMod3, labelMod4, labelObs), col=c('red3','orange','yellow2','green3','black'), lty=c(1,1,1,1,1), bg="white")
+        #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
+        }
+    else if (!is.null(strDf.mod3)) {
+        legend('topright', c(labelMod1, labelMod2, labelMod3, labelObs), col=c('red3','orange','yellow2','black'), lty=c(1,1,1,1), bg="white")
+        #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
+        }
+    else if (!is.null(strDf.mod2)) {
+        legend('topright', c(labelMod1, labelMod2, labelObs), col=c('red3','orange','black'), lty=c(1,1,1), bg="white")
         mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
         }
     else {
