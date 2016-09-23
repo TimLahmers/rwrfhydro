@@ -211,8 +211,14 @@ PlotFluxCompare <- function(strDf.obs, strCol.obs="q_cms",
 PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
                             strDf.mod1, strCol.mod1="q_cms",
                             strDf.mod2=NULL, strCol.mod2="q_cms",
+                            strDf.mod3=NULL, strCol.mod3="q_cms",
+                            strDf.mod4=NULL, strCol.mod4="q_cms",
+                            strDf.mod5=NULL, strCol.mod5="q_cms",
+                            strDf.mod6=NULL, strCol.mod6="q_cms",
                             stdate=NULL, enddate=NULL, logy=FALSE,
                             labelObs="Observed", labelMod1="Model 1", labelMod2="Model 2",
+                            labelMod3="Model 3", labelMod4="Model 4",
+                            labelMod5="Model 5", labelMod6="Model 6",
                             title="Observed and Modelled Fluxes") {
     # PREP DATA
     if (!is.null(stdate) && !is.null(enddate)) {
@@ -220,6 +226,18 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         strDf.mod1 <- subset(strDf.mod1, POSIXct>=stdate & POSIXct<=enddate)
         if (!is.null(strDf.mod2)) {
             strDf.mod2 <- subset(strDf.mod2, POSIXct>=stdate & POSIXct<=enddate)
+            }
+        if (!is.null(strDf.mod3)) {
+            strDf.mod3 <- subset(strDf.mod3, POSIXct>=stdate & POSIXct<=enddate)
+            }
+        if (!is.null(strDf.mod4)) {
+            strDf.mod4 <- subset(strDf.mod4, POSIXct>=stdate & POSIXct<=enddate)
+            }
+        if (!is.null(strDf.mod5)) {
+            strDf.mod5 <- subset(strDf.mod5, POSIXct>=stdate & POSIXct<=enddate)
+            }
+        if (!is.null(strDf.mod6)) {
+            strDf.mod6 <- subset(strDf.mod6, POSIXct>=stdate & POSIXct<=enddate)
             }
         ttext <- paste0(title, " (", stdate, " to ", enddate, ")")
         }
@@ -231,9 +249,33 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
     if (!is.null(strDf.mod2)) {
         strDf.mod2$qcomp.mod2 <- strDf.mod2[,strCol.mod2]
     }
+    if (!is.null(strDf.mod3)) {
+        strDf.mod3$qcomp.mod3 <- strDf.mod2[,strCol.mod3]
+    }
+    if (!is.null(strDf.mod4)) {
+        strDf.mod4$qcomp.mod4 <- strDf.mod2[,strCol.mod4]
+    }
+    if (!is.null(strDf.mod5)) {
+        strDf.mod5$qcomp.mod5 <- strDf.mod2[,strCol.mod5]
+    }
+    if (!is.null(strDf.mod6)) {
+        strDf.mod6$qcomp.mod6 <- strDf.mod2[,strCol.mod6]
+    }
     strDf <- merge(strDf.obs[c("POSIXct","qcomp.obs")], strDf.mod1[c("POSIXct","qcomp.mod1")], by=c("POSIXct"))
     if (!is.null(strDf.mod2)) {
         strDf <- merge(strDf, strDf.mod2[c("POSIXct","qcomp.mod2")], by<-c("POSIXct"))
+        }
+    if (!is.null(strDf.mod3)) {
+        strDf <- merge(strDf, strDf.mod3[c("POSIXct","qcomp.mod3")], by<-c("POSIXct"))
+        }
+    if (!is.null(strDf.mod4)) {
+        strDf <- merge(strDf, strDf.mod4[c("POSIXct","qcomp.mod4")], by<-c("POSIXct"))
+        }
+    if (!is.null(strDf.mod5)) {
+        strDf <- merge(strDf, strDf.mod5[c("POSIXct","qcomp.mod5")], by<-c("POSIXct"))
+        }
+    if (!is.null(strDf.mod6)) {
+        strDf <- merge(strDf, strDf.mod6[c("POSIXct","qcomp.mod6")], by<-c("POSIXct"))
         }
     # STATS
     nseflow1 <- round(Nse(strDf$qcomp.mod1, strDf$qcomp.obs), 2)
@@ -245,6 +287,29 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         minflow <- min(minflow, min(strDf$qcomp.mod2, na.rm=TRUE))
         nseflow2 <- round(Nse(strDf$qcomp.mod2, strDf$qcomp.obs), 2)
         biasflow2 <- round(sum(strDf$qcomp.mod2-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
+        }
+    if (!is.null(strDf.mod3)) {
+        maxflow <- max(maxflow, max(strDf$qcomp.mod3, na.rm=TRUE))
+        minflow <- min(minflow, min(strDf$qcomp.mod3, na.rm=TRUE))
+        nseflow3 <- round(Nse(strDf$qcomp.mod3, strDf$qcomp.obs), 2)
+        biasflow3 <- round(sum(strDf$qcomp.mod3-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
+        }
+    if (!is.null(strDf.mod4)) {
+        maxflow <- max(maxflow, max(strDf$qcomp.mod4, na.rm=TRUE))
+        minflow <- min(minflow, min(strDf$qcomp.mod4, na.rm=TRUE))
+        nseflow4 <- round(Nse(strDf$qcomp.mod4, strDf$qcomp.obs), 2)
+        biasflow4 <- round(sum(strDf$qcomp.mod4-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
+        }
+    if (!is.null(strDf.mod5)) {
+        maxflow <- max(maxflow, max(strDf$qcomp.mod5, na.rm=TRUE))
+        minflow <- min(minflow, min(strDf$qcomp.mod5, na.rm=TRUE))
+        nseflow5 <- round(Nse(strDf$qcomp.mod5, strDf$qcomp.obs), 2)
+        biasflow5 <- round(sum(strDf$qcomp.mod5-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
+    if (!is.null(strDf.mod6)) {
+        maxflow <- max(maxflow, max(strDf$qcomp.mod6, na.rm=TRUE))
+        minflow <- min(minflow, min(strDf$qcomp.mod6, na.rm=TRUE))
+        nseflow6 <- round(Nse(strDf$qcomp.mod6, strDf$qcomp.obs), 2)
+        biasflow6 <- round(sum(strDf$qcomp.mod6-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
         }
     # PLOT
     if (logy) {
