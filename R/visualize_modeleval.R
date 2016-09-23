@@ -305,6 +305,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         minflow <- min(minflow, min(strDf$qcomp.mod5, na.rm=TRUE))
         nseflow5 <- round(Nse(strDf$qcomp.mod5, strDf$qcomp.obs), 2)
         biasflow5 <- round(sum(strDf$qcomp.mod5-strDf$qcomp.obs, na.rm=TRUE)/sum(strDf$qcomp.obs, na.rm=TRUE) * 100, 1)
+        }
     if (!is.null(strDf.mod6)) {
         maxflow <- max(maxflow, max(strDf$qcomp.mod6, na.rm=TRUE))
         minflow <- min(minflow, min(strDf$qcomp.mod6, na.rm=TRUE))
