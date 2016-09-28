@@ -250,16 +250,16 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         strDf.mod2$qcomp.mod2 <- strDf.mod2[,strCol.mod2]
     }
     if (!is.null(strDf.mod3)) {
-        strDf.mod3$qcomp.mod3 <- strDf.mod2[,strCol.mod3]
+        strDf.mod3$qcomp.mod3 <- strDf.mod3[,strCol.mod3]
     }
     if (!is.null(strDf.mod4)) {
-        strDf.mod4$qcomp.mod4 <- strDf.mod2[,strCol.mod4]
+        strDf.mod4$qcomp.mod4 <- strDf.mod4[,strCol.mod4]
     }
     if (!is.null(strDf.mod5)) {
-        strDf.mod5$qcomp.mod5 <- strDf.mod2[,strCol.mod5]
+        strDf.mod5$qcomp.mod5 <- strDf.mod5[,strCol.mod5]
     }
     if (!is.null(strDf.mod6)) {
-        strDf.mod6$qcomp.mod6 <- strDf.mod2[,strCol.mod6]
+        strDf.mod6$qcomp.mod6 <- strDf.mod6[,strCol.mod6]
     }
     strDf <- merge(strDf.obs[c("POSIXct","qcomp.obs")], strDf.mod1[c("POSIXct","qcomp.mod1")], by=c("POSIXct"))
     if (!is.null(strDf.mod2)) {
