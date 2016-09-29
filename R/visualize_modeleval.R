@@ -329,7 +329,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
     with(strDf, lines(POSIXct, qcomp.obs, col='black'))
     if (!is.null(strDf.mod6)) {
         par(xpd = TRUE)
-        legend(xpd = TRUE, xjust = 0, yjust = 0.5, legend = c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelMod6, labelObs), col=c('red3','orange','yellow2','green3','blue','violetred4','black'), lty=c(1,1,1,1,1,1,1), bg="white")
+        legend(x = 1996.5, y = 15, xpd = TRUE, xjust = 0, yjust = 0.5, legend = c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelMod6, labelObs), col=c('red3','orange','yellow2','green3','blue','violetred4','black'), lty=c(1,1,1,1,1,1,1), bg="white")
         #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
         }
     else if (!is.null(strDf.mod5)) {
