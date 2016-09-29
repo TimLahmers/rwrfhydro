@@ -319,7 +319,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         }
     else {
         with(strDf, plot(POSIXct, qcomp.mod1, typ='l', col='red3', ylab=paste0(strCol.mod1),
-                                main=ttext, ylim=c(minflow,maxflow)))
+                                main=ttext, ylim=c(minflow,(maxflow+(maxflow-minflow)*0.25))))
         }
     if (!is.null(strDf.mod2)) { with(strDf, lines(POSIXct, qcomp.mod2, col='orange')) }
     if (!is.null(strDf.mod3)) { with(strDf, lines(POSIXct, qcomp.mod3, col='yellow2')) }
@@ -329,7 +329,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
     with(strDf, lines(POSIXct, qcomp.obs, col='black'))
     if (!is.null(strDf.mod6)) {
         par(xpd = TRUE)
-        legend(x = 1996.5, y = 15, xpd = TRUE, xjust = 0, yjust = 0.5, legend = c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelMod6, labelObs), col=c('red3','orange','yellow2','green3','blue','violetred4','black'), lty=c(1,1,1,1,1,1,1), bg="white")
+        legend('topright', legend = c(labelMod1, labelMod2, labelMod3, labelMod4, labelMod5, labelMod6, labelObs), col=c('red3','orange','yellow2','green3','blue','violetred4','black'), lty=c(1,1,1,1,1,1,1), bg="white")
         #mtext(c(paste0("MODEL1: NSE=", nseflow1, " Bias=", biasflow1, "%  MODEL2: NSE=", nseflow2, " Bias=", biasflow2, "%")), side=3, line=0.0, cex=0.9)
         }
     else if (!is.null(strDf.mod5)) {
