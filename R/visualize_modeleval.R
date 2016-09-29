@@ -319,7 +319,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         }
     else {
         with(strDf, plot(POSIXct, qcomp.mod1, typ='l', col='red3', ylab=paste0(strCol.mod1),
-                                main=ttext, ylim=c(0,(maxflow+(maxflow-minflow)*0.25))))
+                                main=ttext, ylim=c(0,(maxflow+(maxflow-0)*0.25))))
         }
     if (!is.null(strDf.mod2)) { with(strDf, lines(POSIXct, qcomp.mod2, col='orange')) }
     if (!is.null(strDf.mod3)) { with(strDf, lines(POSIXct, qcomp.mod3, col='yellow2')) }
