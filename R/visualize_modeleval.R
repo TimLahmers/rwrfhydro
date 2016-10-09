@@ -314,7 +314,7 @@ PlotFluxCompareMultiVal <- function(strDf.obs, strCol.obs="q_cms",
         }
     # PLOT
     if (logy) {
-        with(strDf, plot(POSIXct, log10(qcomp.mod1), typ='l', log='y', col='green2', ylab=paste0(strCol.mod1),
+        with(strDf, plot(POSIXct, log10(qcomp.mod1), typ='l', log='y', col='red3', ylab=paste0(strCol.mod1),
                                 main=ttext, ylim=c(0.01,(maxflow*100))))
         }
     else {
