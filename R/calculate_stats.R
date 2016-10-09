@@ -307,9 +307,9 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     flxDf.mod <- subset(flxDf.mod, !is.na(flxDf.mod$qcomp.mod) & !is.na(flxDf.mod$qcomp.obs))
     flxDf.mod <- CalcDates(flxDf.mod)
     flxDf.mod$date <- as.POSIXct(trunc(flxDf.mod$POSIXct, "days"))
-    results <- as.data.frame(matrix(nrow = 7, ncol = 11))
+    results <- as.data.frame(matrix(nrow = 7, ncol = 13))
     colnames(results) = c("n", "nse", "nselog", "cor", "rmse", "rmsenorm", "bias", "mae", 
-                          "errcom", "errmaxt", "stddevbias")
+                          "errcom", "errmaxt", "stddevbias","skewbias","kurtbias")
     rownames(results) = c("units", "t", "daily", "monthly", "yearly", "max10", "min10")
     exclvars <- names(flxDf.mod) %in% c("POSIXct", "secs", "timest", "date", "stat")
     
@@ -397,6 +397,10 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["t", "errmaxt"] <- NA
     
     results["t", "stddevbias"] <- round(((sd(flxDf.mod$qcomp.mod)-sd(flxDf.mod$qcomp.obs))/sd(flxDf.mod$qcomp.obs))*100,2)
+    results["t", "skewbias"] <- round(((skewness(flxDf.mod$qcomp.mod)-skewness(flxDf.mod$qcomp.obs))/skewness(flxDf.mod$qcomp.obs))*100,2)    
+    results["t", "kurtbias"] <- round(((geary(flxDf.mod$qcomp.mod)-geary(flxDf.mod$qcomp.obs))/geary(flxDf.mod$qcomp.obs))*100,2)
+    # geary kurtosis, used for bias (kurtosis/std. dev.)
+    
     # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
     # 04 SEPTEMBER 2016; MODIFICATION BY TML
     #results["t", "errfdc"] <- round(integrate(splinefun(flxDf.mod[,"qcomp.mod.fdc"], 
@@ -426,6 +430,8 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     
     
     results["daily", "stddevbias"] <- NA
+    results["daily", "skewbias"] <- NA    
+    results["daily", "kurtbias"] <- NA    
     # FDC ERROR FUNCTION TEMPORARILLY COMMENTED OUT TO PREVENT PROGRAM FROM CRASHING DUE TO INTEGRATION ERROR
     # 04 SEPTEMBER 2016; MODIFICATION BY TML
     #results["daily", "errfdc"] <- round(integrate(splinefun(flxDf.mod.d[,"qcomp.mod.fdc"], 
@@ -476,6 +482,8 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
                                                                    flxDf.mod.wymax$qcomp.obs, 
                                                                    units="days")), na.rm=T), 2)
     results["yearly", "stddevbias"] <- NA
+    results["yearly", "skewbias"] <- NA
+    results["yearly", "kurtbias"] <- NA
     
     results["max10", "n"] <- length(flxDf.mod.max10$qcomp.mod)
     results["max10", "nse"] <- round(Nse(flxDf.mod.max10$qcomp.mod, flxDf.mod.max10$qcomp.obs), 2)
@@ -493,6 +501,8 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["max10", "errcom"] <- NA
     results["max10", "errmaxt"] <- NA
     results["max10", "stddevbias"] <- NA
+    results["max10", "skewbias"] <- NA    
+    results["max10", "kurtbias"] <- NA    
     
     results["min10", "n"] <- length(flxDf.mod.min10$qcomp.mod)
     results["min10", "nse"] <- round(Nse(flxDf.mod.min10$qcomp.mod, flxDf.mod.min10$qcomp.obs), 2)
@@ -510,12 +520,15 @@ CalcModPerf <- function (flxDf.mod, flxDf.obs, flxCol.mod="q_cms", flxCol.obs="q
     results["min10", "errcom"] <- NA
     results["min10", "errmaxt"] <- NA
     results["min10", "stddevbias"] <- NA
+    results["min10", "skewbias"] <- NA
+    results["min10", "kurtbias"] <- NA
+    
     
     # Units
     results["units",] <- c("count", "unitless", "unitless", "unitless", 
                            "flux units", "unitless", "percent", "flux units", 
                            "hours|days", "hours|days",
-                           "percent")
+                           "percent","percent","percent")
     
     results
  }
